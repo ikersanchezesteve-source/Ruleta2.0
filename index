@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>¡Ruleta Party!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; padding: 0; height: 100vh; background: #ffeaa7; 
+            font-family: 'Fredoka One', cursive; overflow: hidden; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .fun-card {
+            position: relative; z-index: 10; width: 90%; max-width: 380px;
+            background: linear-gradient(145deg, #ff7e5f, #feb47b);
+            border-radius: 30px; padding: 30px 20px; box-sizing: border-box;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2); text-align: center; color: white;
+            border: 5px solid #fff; animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        h1 { font-size: 26px; margin: 0 0 20px 0; text-shadow: 2px 2px #d35400; }
+
+        .canvas-container { 
+            position: relative; width: 100%; aspect-ratio: 1/1; 
+            max-width: 260px; margin: 0 auto; border: 5px solid #fff; border-radius: 50%;
+        }
+        #canvas { border-radius: 50%; width: 100%; height: 100%; background: #eee; }
+        
+        #pointer { 
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+            width: 0; height: 0; border-left: 15px solid transparent; 
+            border-right: 15px solid transparent; border-top: 30px solid #f9ca24;
+            z-index: 15; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        button { 
+            margin-top: 25px; width: 90%; padding: 16px; font-family: 'Fredoka One', cursive;
+            font-size: 20px; border-radius: 30px; border: none; 
+            background: #e84393; color: white; cursor: pointer; 
+            box-shadow: 0 5px 15px rgba(224, 73, 137, 0.4); transition: 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <div class="fun-card">
+        <h1>🥳 ¿QUÉ TE TOCA? 🎉</h1>
+        <div class="canvas-container">
+            <div id="pointer"></div>
+            <canvas id="canvas" width="300" height="300"></canvas>
+        </div>
+        <button onclick="spin()">¡GIRAR! 🤩</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const options = ["BESO", "INSTAGRAM", "ABRAZO", "CUBATA", "VOLTERETA", "RETO"];
+        const colors = ["#eb4d4b", "#f0932b", "#fed330", "#26de81", "#2d98da", "#8e44ad"]; 
+        const arc = (2 * Math.PI) / options.length;
+
+        function draw() {
+            options.forEach((opt, i) => {
+                const angle = i * arc;
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 150, angle, angle + arc);
+                ctx.fill();
+                ctx.save();
+                ctx.fillStyle = "white";
+                ctx.font = "bold 18px Arial"; 
+                ctx.translate(150 + Math.cos(angle + arc/2) * 100, 150 + Math.sin(angle + arc/2) * 100);
+                ctx.rotate(angle + arc/2 + Math.PI / 2);
+                ctx.fillText(opt, -ctx.measureText(opt).width/2, 0);
+                ctx.restore();
+            });
+        }
+
+        function spin() {
+            const btn = document.querySelector('button');
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+
+            // Cálculo exacto para BESO (Opción 0, Color Rojo)
+            const vueltas = 10; 
+            const stopAngle = 270 - 30; 
+            const totalRotation = (360 * vueltas) + stopAngle;
+            
+            canvas.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
+            canvas.style.transform = `rotate(${totalRotation}deg)`;
+            
+            // He quitado el alert para que sea más limpio
+        }
+
+        draw();
+    </script>
+</body>
+</html>
